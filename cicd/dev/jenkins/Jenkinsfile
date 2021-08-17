@@ -1,0 +1,73 @@
+pipeline {
+  agent any
+
+  stages {
+    stage('Checkout') {
+      steps{
+        checkout scm
+      }
+    }
+
+    stage('Java Build') {
+      steps{
+        sh "mvn clean install -Dmaven.test.skip=true"
+      }
+    }
+
+    stage('Docker Build') {
+      steps{
+        sh "docker build -t academysteve-back:${currentBuild.number} ."
+      }
+    }
+
+    stage('Deploy k8s Service') {
+      steps{
+        sh """
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-dev-academysteve-back
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8103
+      protocol: TCP
+  selector:
+    app: deploy-dev-academysteve-back
+EOF
+        """
+      }
+    }
+
+    stage('Deploy k8s Deploy') {
+      steps{
+        sh """
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-dev-academysteve-back
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deploy-dev-academysteve-back
+  template:
+    metadata:
+      labels:
+        app: deploy-dev-academysteve-back
+    spec:
+      containers:
+        - name: academysteve-back
+          image: academysteve-back:${currentBuild.number}
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8103
+EOF
+        """
+      }
+    }
+  }
+}
