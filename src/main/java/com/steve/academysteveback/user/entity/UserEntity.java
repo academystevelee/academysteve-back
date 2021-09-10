@@ -20,10 +20,10 @@ public class UserEntity {
   @Column(name = "USER_PW", nullable = false, length = 100)
   private String userPw;
 
-  @Column(name = "USER_NAME", nullable = false, length = 30)
+  @Column(name = "USER_NAME", length = 30)
   private String userName;
 
-  @Column(name = "USER_TYPE", nullable = false, length = 10)
+  @Column(name = "USER_TYPE", length = 10)
   private String userType;
 
   @Column(name = "USER_BIRTH", length=8)

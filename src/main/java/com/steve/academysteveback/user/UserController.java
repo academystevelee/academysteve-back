@@ -2,11 +2,18 @@ package com.steve.academysteveback.user;
 
 import com.steve.academysteveback.mail.MailDto;
 import com.steve.academysteveback.mail.MailService;
-import com.steve.academysteveback.user.dto.UserDto;
-import com.steve.academysteveback.user.entity.AuthMailEntity;
+import com.steve.academysteveback.mytrain.dto.EnrollDto;
+import com.steve.academysteveback.token.JwtService;
+import com.steve.academysteveback.user.dto.*;
+import com.steve.academysteveback.user.service.LogService;
+import com.steve.academysteveback.user.service.UserService;
+import com.steve.academysteveback.util.ApiResponseModel;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -14,6 +21,15 @@ public class UserController {
 
     @Autowired
     MailService mailService;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    JwtService jwtService;
+
+    @Autowired
+    LogService logService;
 
 //    @Autowired
 //    UserService userService;
@@ -61,6 +77,16 @@ public class UserController {
         String authNumber = mailService.sendMail(mailDto);
 
         System.out.println("auth:" + authNumber);
+
+        JoinDto joinDto = new JoinDto();
+        joinDto.setUserId(userDto.getMail());
+        joinDto.setUserPw(authNumber);
+
+        ApiResponseModel response = new ApiResponseModel();
+        userService.join(joinDto);
+        response.put(null);
+
+
     }
 
     @GetMapping("/sendAuthMail")
@@ -75,5 +101,90 @@ public class UserController {
         String authNumber = mailService.sendMail(mailDto);
 
         System.out.println("auth:" + authNumber);
+
+        JoinDto joinDto = new JoinDto();
+        joinDto.setUserId(mail);
+        joinDto.setUserPw(authNumber);
+
+        ApiResponseModel response = new ApiResponseModel();
+
+        userService.join(joinDto);
+        response.put(null);
+        //return response;
+
+        /* 회원정보 등록 */
     }
+
+
+    @PostMapping("/login")
+    @ApiOperation(value = "로그인처리", notes = "로그인처리")
+    public ApiResponseModel loginAction(@RequestBody LoginDto loginDto) throws Exception {
+        System.out.println("LoginDto:" + loginDto);
+        ApiResponseModel response = new ApiResponseModel();
+        String jwtToken = userService.login(loginDto);
+
+        if(jwtToken != null){
+            System.out.println("jwtToken:" + jwtToken);
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            map.put("jwtToken", jwtToken);
+            map.put("userInfo", userService.getUserInfo(loginDto.getUserId()));
+            response.put(map);
+        }else{
+            response.setResultCode(500);
+        }
+
+
+        return response;
+    }
+
+    @PostMapping("/tokenchk")
+    @ApiOperation(value = "로그인처리", notes = "로그인처리")
+    public ApiResponseModel tokenChk(@RequestBody JwtUserDto jwtUserDto) throws Exception {
+        System.out.println("jwtUserDto:" + jwtUserDto);
+        ApiResponseModel response = new ApiResponseModel();
+        JwtUserDto jwtUserDto2 = jwtService.detailJwtToken(jwtUserDto.getToken());
+        System.out.println("jwtUserDto2:" + jwtUserDto2);
+        /*
+        boolean result = jwtService.checkJwtToken(jwtUserDto.getToken());
+        System.out.println("result:" + result);
+        if(!result) response.setResultCode(500);
+        else {
+            jwtUserDto = jwtService.detailJwtToken(jwtUserDto.getToken());
+            response.setData(jwtUserDto);
+        }
+        */
+        if(jwtUserDto2.getUserType() == null) response.setResultCode(500);
+        else {
+            response.setData(jwtUserDto2);
+        }
+
+        return response;
+    }
+
+    @PostMapping("/logging")
+    @ApiOperation(value = "로그인처리", notes = "로그인처리")
+    public ApiResponseModel logging(@RequestBody LogDto logDto, HttpServletRequest request) throws Exception {
+        System.out.println("logDto:" + logDto);
+        ApiResponseModel response = new ApiResponseModel();
+
+        System.out.println("getPathInfo:" + request.getPathInfo());
+        System.out.println("getRequestURI:" + request.getRequestURI());
+        System.out.println("getRemoteUser:" + request.getRemoteUser());
+        System.out.println("getLocalAddr:" + request.getLocalAddr());
+        System.out.println("getRemoteAddr:" + request.getRemoteAddr());
+        System.out.println("getRequestURL:" + request.getRequestURL());
+
+        if(request.getLocalAddr() != null) logDto.setUserIp(request.getLocalAddr());
+        else logDto.setUserIp(request.getRemoteAddr());
+
+        logDto.setReqUrl(request.getRequestURL().toString());
+
+        logService.logging(logDto);
+
+        response.setData("ok");
+
+
+        return response;
+    }
+
 }

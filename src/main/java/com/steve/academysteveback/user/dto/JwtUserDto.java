@@ -8,4 +8,5 @@ public class JwtUserDto {
   private Long seq;
   private String userId;
   private String userType;
+  private String token;
 }

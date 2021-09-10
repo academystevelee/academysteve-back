@@ -24,3 +24,16 @@ Content-Type: application/json
 {
   "mail": "stevelee@steveleejava.com"
 }
+
+### sendmaildomain
+
+POST www.steveleeacademy.com:8103/academyback/logging
+Content-Type: application/json
+
+{
+  "userId": "stevelee@steveleejava.com",
+  "location": "localhost:8081"
+}
+
+### testdomain
+GET www.steveleeacademy.com:8103/academyback/blog/bloglist?page=0
