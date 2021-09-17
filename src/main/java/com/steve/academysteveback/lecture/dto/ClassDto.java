@@ -18,5 +18,7 @@ public class ClassDto {
   private String contents;
   private String status;
   private String titlecolor;
+  private char delYn;
+  private Long order;
 
 }

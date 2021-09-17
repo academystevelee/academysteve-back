@@ -44,7 +44,11 @@ public class ClassEntity {
   @Column(name = "TITLECOLOR")
   private String titlecolor;
 
+  @Column(name = "DEL_YN")
+  private char delYn;
 
+  @Column(name = "ORDER")
+  private Long order;
 
   public ClassEntity() {
     this.regDt = new Date();

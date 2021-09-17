@@ -15,6 +15,7 @@ public class JoinDto {
   private String mailAuthNumber;
   private String phoneAuthNumber;
   private Character marketYn;
+  private Character agreeYn;
 
 
   public String getUserPw() {

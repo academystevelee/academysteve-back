@@ -54,6 +54,18 @@ public class UserService {
     userRepository.save(userEntity);
   }
 
+  /**
+   * 회원가입
+   * @param joinDto
+   */
+  public void agree(JoinDto joinDto) {
+    UserEntity userEntity = userRepository.findByUserId(joinDto.getUserId());
+    userEntity.setUserName(joinDto.getUserName());
+    userEntity.setUserPhone(joinDto.getUserPhone());
+    userEntity.setAgreeYn('Y');
+    userRepository.save(userEntity);
+  }
+
 
 
 

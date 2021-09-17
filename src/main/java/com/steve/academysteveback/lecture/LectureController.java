@@ -26,7 +26,7 @@ public class LectureController {
     ClassDtService classDtService;
 
     @GetMapping("/all")
-    @ApiOperation(value = "인증메일 발송", notes = "인증메일을 발송한다.")
+    @ApiOperation(value = "클래스 리스트", notes = "클래스 리스트")
     public List<ClassEntity> all() throws Exception {
         List<ClassEntity> classlist = classService.all();
 
@@ -35,7 +35,7 @@ public class LectureController {
     }
 
     @GetMapping("/class/{classno}")
-    @ApiOperation(value = "인증메일 발송", notes = "인증메일을 발송한다.")
+    @ApiOperation(value = "클래스 상세", notes = "클래스 상세")
     public ClassEntity classfindByClassNo(@PathVariable String classno) throws Exception {
         ClassEntity classEntity = classService.findByClassNo(classno);
 
@@ -44,7 +44,7 @@ public class LectureController {
     }
 
     @GetMapping("/classdt/{classno}")
-    @ApiOperation(value = "인증메일 발송", notes = "인증메일을 발송한다.")
+    @ApiOperation(value = "클래스 수강일", notes = "클래스 수강일")
     public List<ClassDtEntity> classdtfindByClassNo(@PathVariable String classno) throws Exception {
         System.out.println("classno ok : " + classno) ;
         List<ClassDtEntity> classDtlist = classDtService.findByClassNo(classno);

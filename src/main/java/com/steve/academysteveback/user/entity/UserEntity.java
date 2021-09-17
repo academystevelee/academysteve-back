@@ -65,6 +65,9 @@ public class UserEntity {
   @Column(name = "DEL_DT")
   private Date delDt;
 
+  @Column(name = "AGREE_YN")
+  private Character agreeYn;
+
 
   public UserEntity() {
     this.userType = "USER";

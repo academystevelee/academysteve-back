@@ -1,5 +1,7 @@
 package com.steve.academysteveback.mail;
 
+import com.steve.academysteveback.user.dto.LogDto;
+import com.steve.academysteveback.user.service.LogService;
 import com.steve.academysteveback.util.NumberUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,8 @@ import javax.mail.internet.MimeMessage;
 @RequiredArgsConstructor
 public class MailService {
 
-
+  @Autowired
+  LogService logService;
 
   @Autowired
   SpringTemplateEngine templateEngine;
@@ -29,7 +32,7 @@ public class MailService {
    * 메일발송
    * @param mailDto
    */
-  public String sendMail(MailDto mailDto) {
+  public String sendMail(MailDto mailDto, LogDto logDto) {
     String authNumber = NumberUtil.randomNum(6);
     Context context = new Context();
     context.setVariable("emailToken", authNumber);
@@ -45,7 +48,11 @@ public class MailService {
       helper.setText(html, true);
 
       javaMailSender.send(message);
+      logDto.setLocation("mail success");
+      logService.logging(logDto);
     } catch(MessagingException e) {
+      logDto.setLocation("mail fail");
+      logService.logging(logDto);
       throw new RuntimeException(e);
     }
 

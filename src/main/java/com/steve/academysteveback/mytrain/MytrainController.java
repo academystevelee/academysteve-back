@@ -1,8 +1,11 @@
 package com.steve.academysteveback.mytrain;
 
+import com.steve.academysteveback.lecture.entity.ClassEntity;
 import com.steve.academysteveback.mail.MailDto;
 import com.steve.academysteveback.mail.MailService;
+import com.steve.academysteveback.mytrain.dto.EnrollDoneDto;
 import com.steve.academysteveback.mytrain.dto.EnrollDto;
+import com.steve.academysteveback.mytrain.entity.EnrollEntity;
 import com.steve.academysteveback.mytrain.service.EnrollService;
 import com.steve.academysteveback.token.JwtService;
 import com.steve.academysteveback.user.dto.JoinDto;
@@ -16,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -37,4 +41,12 @@ public class MytrainController {
 
     }
 
+    @GetMapping("/enroll/{userId}")
+    @ApiOperation(value = "클래스 상세", notes = "클래스 상세")
+    public List<EnrollDoneDto> classfindByClassNo(@PathVariable String userId) throws Exception {
+        List<EnrollDoneDto> enrolllist = enrollService.findDone(userId);
+
+        return enrolllist;
+
+    }
 }

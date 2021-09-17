@@ -67,14 +67,22 @@ public class UserController {
 
     @PostMapping("/sendAuthMail")
     @ApiOperation(value = "인증메일 발송", notes = "인증메일을 발송한다.")
-    public void sendAuthMail(@RequestBody UserDto userDto) throws Exception {
+    public void sendAuthMail(@RequestBody UserDto userDto, HttpServletRequest request) throws Exception {
 
         MailDto mailDto = new MailDto();
         mailDto.setTo(userDto.getMail());
         mailDto.setSubject("스티브리아카데미 가입인증 메일");
         mailDto.setMailTemplate("tokenMail.html");
 
-        String authNumber = mailService.sendMail(mailDto);
+        LogDto logDto = new LogDto();
+
+        logDto.setUserId(userDto.getMail());
+        logDto.setUserIp(request.getRemoteAddr());
+
+        logDto.setReqUrl(request.getRequestURL().toString());
+
+
+        String authNumber = mailService.sendMail(mailDto, logDto);
 
         System.out.println("auth:" + authNumber);
 
@@ -88,17 +96,26 @@ public class UserController {
 
 
     }
-
+/*
     @GetMapping("/sendAuthMail")
     @ApiOperation(value = "인증메일 발송", notes = "인증메일을 발송한다.")
-    public void sendAuthMailGet(@RequestParam String mail) throws Exception {
+    public void sendAuthMailGet(@RequestParam String mail, HttpServletRequest request) throws Exception {
 
         MailDto mailDto = new MailDto();
         mailDto.setTo(mail);
         mailDto.setSubject("스티브리아카데미 가입인증 메일");
         mailDto.setMailTemplate("tokenMail.html");
 
-        String authNumber = mailService.sendMail(mailDto);
+        LogDto logDto = new LogDto();
+
+        logDto.setUserId(mail);
+        logDto.setUserIp(request.getRemoteAddr());
+
+        logDto.setReqUrl(request.getRequestURL().toString());
+
+        logService.logging(logDto);
+
+        String authNumber = mailService.sendMail(mailDto, logDto);
 
         System.out.println("auth:" + authNumber);
 
@@ -110,11 +127,9 @@ public class UserController {
 
         userService.join(joinDto);
         response.put(null);
-        //return response;
 
-        /* 회원정보 등록 */
     }
-
+*/
 
     @PostMapping("/login")
     @ApiOperation(value = "로그인처리", notes = "로그인처리")
@@ -133,6 +148,18 @@ public class UserController {
             response.setResultCode(500);
         }
 
+
+        return response;
+    }
+
+    @PostMapping("/agree")
+    @ApiOperation(value = "비밀유지동의", notes = "비밀유지동의")
+    public ApiResponseModel agreeAction(@RequestBody JoinDto joinDto) throws Exception {
+        System.out.println("joinDto:" + joinDto);
+        ApiResponseModel response = new ApiResponseModel();
+
+        userService.agree(joinDto);
+        response.put(null);
 
         return response;
     }
@@ -174,7 +201,7 @@ public class UserController {
         System.out.println("getRemoteAddr:" + request.getRemoteAddr());
         System.out.println("getRequestURL:" + request.getRequestURL());
 
-        if(request.getLocalAddr() != null) logDto.setUserIp(request.getLocalAddr());
+        if(request.getLocalAddr() != null) logDto.setUserIp(request.getRemoteAddr());
         else logDto.setUserIp(request.getRemoteAddr());
 
         logDto.setReqUrl(request.getRequestURL().toString());

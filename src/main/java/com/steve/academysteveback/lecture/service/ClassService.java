@@ -6,6 +6,7 @@ import com.steve.academysteveback.lecture.entity.ClassEntity;
 import com.steve.academysteveback.lecture.repository.ClassRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class ClassService {
   public List<ClassEntity> all() {
 
 
-    List<ClassEntity> classlist = classRepository.findAll();
+    List<ClassEntity> classlist = classRepository.findAll(Sort.by(Sort.Direction.ASC,"order"));
     return classlist;
   }
 

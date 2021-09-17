@@ -37,3 +37,9 @@ Content-Type: application/json
 
 ### testdomain
 GET www.steveleeacademy.com:8103/academyback/blog/bloglist?page=0
+
+### testdomain
+GET localhost:8103/academyback/blog/bloglist?page=0
+
+### testdomain
+GET localhost:8103/academyback/enroll/easyvvon@gmail.com
