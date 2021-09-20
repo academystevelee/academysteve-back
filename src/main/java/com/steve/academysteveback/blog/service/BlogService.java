@@ -8,7 +8,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,41 +18,58 @@ import java.util.Optional;
 @Service
 public class BlogService {
 
-  @Autowired
-  BlogRepository blogRepository;
+    @Autowired
+    BlogRepository blogRepository;
 
 
-  ModelMapper modelMapper = new ModelMapper();
+    ModelMapper modelMapper = new ModelMapper();
 
 
-  /**
-   * 강좌등록
-   * @param blogDto
-   */
-  public void register(BlogDto blogDto) {
-    BlogEntity blogEntity = new BlogEntity();
-    blogEntity = modelMapper.map(blogDto, BlogEntity.class);
+    /**
+     * 강좌등록
+     *
+     * @param blogDto
+     */
+    public void register(BlogDto blogDto) {
+        BlogEntity blogEntity = new BlogEntity();
+        blogEntity = modelMapper.map(blogDto, BlogEntity.class);
 
-    blogRepository.save(blogEntity);
-  }
+        blogRepository.save(blogEntity);
+    }
 
-  /**
-   * 강좌조회
-   */
-  public Optional<BlogEntity> findByBlogNo(Long blogNo) {
-
-
-    Optional<BlogEntity> blogEntity = blogRepository.findById(blogNo);
-
-    return blogEntity;
-  }
+    /**
+     * 강좌조회
+     */
+    public Optional<BlogEntity> findByBlogNo(Long blogNo) {
 
 
-  public Page<BlogEntity> findByPageNo(Pageable pageable){
+        Optional<BlogEntity> blogEntity = blogRepository.findById(blogNo);
 
-    return blogRepository.findAll(pageable);
-  }
+        return blogEntity;
+    }
 
+
+    public Page<BlogEntity> findByPageNo(Pageable pageable) {
+
+        return blogRepository.findAll(pageable);
+    }
+
+    public void blogListShowCheckService(Long seq) {
+//    Long seqId = Long.getLong(seq);
+
+        Optional<BlogEntity> byId = blogRepository.findById(seq);
+        BlogEntity blogEntity = byId.orElse(null);
+
+        System.out.println("delYn = " + blogEntity.getDelYn().equals("N"));
+        System.out.println(blogEntity.getDelYn() instanceof String);
+        if (blogEntity.getDelYn().equals("N")) {
+            int blogEntity1 = blogRepository.updateDelY(seq);
+            System.out.println("blogEntity1 = " + blogEntity1);
+        } else if (blogEntity.getDelYn().equals("Y")) {
+            int blogEntity1 = blogRepository.updateDelN(seq);
+            System.out.println("blogEntity1 = " + blogEntity1);
+        } else System.out.println("BlogService.blogListShowCheckService ############");
+    }
 
 
 }

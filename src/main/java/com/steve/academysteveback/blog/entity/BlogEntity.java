@@ -41,6 +41,9 @@ public class BlogEntity {
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime updDt;
 
+  @Column(name = "DEL_YN")
+  private String delYn;
+
   public BlogEntity() {
     this.regDt = LocalDateTime.now();
     this.updDt = LocalDateTime.now();

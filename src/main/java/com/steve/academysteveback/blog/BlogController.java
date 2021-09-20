@@ -22,22 +22,15 @@ import java.util.Optional;
 @RestController
 public class BlogController {
 
-
-
     @Autowired
     BlogService blogService;
-
-
 
     @PostMapping("/register")
     @ApiOperation(value = "로그인처리", notes = "로그인처리")
     public void lecture(@RequestBody BlogDto blogDto) throws Exception {
         System.out.println("blogDto ok : " + blogDto) ;
         blogDto.setHit(new Long(0));
-
         blogService.register(blogDto);
-
-
     }
 
     @GetMapping("/blogview/{blogno}")
@@ -45,10 +38,7 @@ public class BlogController {
     public Optional<BlogEntity> blogviewfindByBlogNo(@PathVariable Long blogno) throws Exception {
         System.out.println("blogno ok : " + blogno) ;
         Optional<BlogEntity> blogEntity = blogService.findByBlogNo(blogno);
-
-
         return blogEntity;
-
     }
 
     @GetMapping("/bloglist")
@@ -65,6 +55,14 @@ public class BlogController {
 //        System.out.println("searchsel = " + searchsel);
 //        System.out.println("searchinput = " + searchinput);
         return blogEntities;
+    }
+
+    @PutMapping("/bloglistshowcheck")
+    public String blogListShowCheck(@RequestParam Long seq) {
+        System.out.println("BlogController.blogListShowCheck");
+        blogService.blogListShowCheckService(seq);
+//        System.out.println(seq);
+        return "기술개발중...";
     }
 
 }

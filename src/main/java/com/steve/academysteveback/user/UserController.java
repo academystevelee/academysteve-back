@@ -69,6 +69,8 @@ public class UserController {
     @ApiOperation(value = "인증메일 발송", notes = "인증메일을 발송한다.")
     public void sendAuthMail(@RequestBody UserDto userDto, HttpServletRequest request) throws Exception {
 
+        System.out.println("UserController.sendAuthMail");
+
         MailDto mailDto = new MailDto();
         mailDto.setTo(userDto.getMail());
         mailDto.setSubject("스티브리아카데미 가입인증 메일");
