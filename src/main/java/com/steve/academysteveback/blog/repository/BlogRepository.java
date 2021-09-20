@@ -9,17 +9,16 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
+@Transactional
 public interface BlogRepository extends JpaRepository<BlogEntity, Long> {
 
   //BlogEntity findByClassNo(String classNo);
 
     @Modifying
-    @Transactional
     @Query("update BLOG b set b.delYn = 'Y' where b.seq = ?1")
     int updateDelY(Long seq);
 
     @Modifying
-    @Transactional
     @Query("update BLOG b set b.delYn = 'N' where b.seq = ?1")
     int updateDelN(Long seq);
 }

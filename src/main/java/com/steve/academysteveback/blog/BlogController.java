@@ -14,8 +14,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/blog")
@@ -28,7 +31,7 @@ public class BlogController {
     @PostMapping("/register")
     @ApiOperation(value = "로그인처리", notes = "로그인처리")
     public void lecture(@RequestBody BlogDto blogDto) throws Exception {
-        System.out.println("blogDto ok : " + blogDto) ;
+        System.out.println("blogDto ok : " + blogDto);
         blogDto.setHit(new Long(0));
         blogService.register(blogDto);
     }
@@ -36,7 +39,7 @@ public class BlogController {
     @GetMapping("/blogview/{blogno}")
     @ApiOperation(value = "인증메일 발송", notes = "인증메일을 발송한다.")
     public Optional<BlogEntity> blogviewfindByBlogNo(@PathVariable Long blogno) throws Exception {
-        System.out.println("blogno ok : " + blogno) ;
+        System.out.println("blogno ok : " + blogno);
         Optional<BlogEntity> blogEntity = blogService.findByBlogNo(blogno);
         return blogEntity;
     }
@@ -58,11 +61,12 @@ public class BlogController {
     }
 
     @PutMapping("/bloglistshowcheck")
-    public String blogListShowCheck(@RequestParam Long seq) {
-        System.out.println("BlogController.blogListShowCheck");
+    public void blogListShowCheck(@RequestParam Long seq) {
         blogService.blogListShowCheckService(seq);
-//        System.out.println(seq);
-        return "기술개발중...";
     }
 
+    @PutMapping("/bloglistsshowcheck")
+    public void blogListsShowCheck(@RequestParam Long seq, @RequestParam boolean status) {
+        blogService.blogListsShowCheckService(seq, status);
+    }
 }
