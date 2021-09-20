@@ -52,15 +52,19 @@ public class BlogController {
     }
 
     @GetMapping("/bloglist")
-    @ApiOperation(value = "인증메일 발송", notes = "인증메일을 발송한다.")
-    public Page<BlogEntity> bloglistfindByPageNo(@PageableDefault(size = 10, sort = "seq",direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
-
-
-        Page<BlogEntity> blogEntities =  blogService.findByPageNo(pageable);
-
-
+    @ApiOperation(value = "기술블로그 리스트 조회", notes = "기술블로그 리스트를 조회한다.")
+    public Page<BlogEntity> bloglistfindByPageNo(
+            @PageableDefault(size = 20, sort = "seq", direction = Sort.Direction.DESC) Pageable pageable
+//            @RequestParam(defaultValue = "all", required = false) String category,
+//            @RequestParam(required = false) String searchsel,
+//            @RequestParam(required = false) String searchinput
+    ) throws Exception {
+        Page<BlogEntity> blogEntities = blogService.findByPageNo(pageable);
+        System.out.println("BlogController.bloglistfindByPageNo");
+//        System.out.println("category = " + category);
+//        System.out.println("searchsel = " + searchsel);
+//        System.out.println("searchinput = " + searchinput);
         return blogEntities;
-
     }
 
 }

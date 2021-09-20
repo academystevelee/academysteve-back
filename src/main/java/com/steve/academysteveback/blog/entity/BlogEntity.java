@@ -1,8 +1,12 @@
 package com.steve.academysteveback.blog.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -30,18 +34,15 @@ public class BlogEntity {
   private Long hit;
 
   @Column(name = "REG_DT")
-  private Date regDt;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  private LocalDateTime regDt;
 
   @Column(name = "UPD_DT")
-  private Date updDt;
-
-
-
-
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  private LocalDateTime updDt;
 
   public BlogEntity() {
-
-    this.regDt = new Date();
-    this.updDt = new Date();
+    this.regDt = LocalDateTime.now();
+    this.updDt = LocalDateTime.now();
   }
 }
