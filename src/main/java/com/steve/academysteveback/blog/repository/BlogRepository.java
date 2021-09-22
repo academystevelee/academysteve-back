@@ -3,6 +3,7 @@ package com.steve.academysteveback.blog.repository;
 
 import com.steve.academysteveback.blog.entity.BlogEntity;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface BlogRepository extends JpaRepository<BlogEntity, Long> {
 
-  //BlogEntity findByClassNo(String classNo);
+    //BlogEntity findByClassNo(String classNo);
 
     @Modifying
     @Query("update BLOG b set b.delYn = 'Y' where b.seq = ?1")
@@ -22,4 +23,7 @@ public interface BlogRepository extends JpaRepository<BlogEntity, Long> {
     @Modifying
     @Query("update BLOG b set b.delYn = 'N' where b.seq = ?1")
     int updateDelN(Long seq);
+
+    @Query("select b from BLOG b where b.delYn = 'Y'")
+    Page<BlogEntity> findByDelYn(Pageable pageable);
 }

@@ -44,6 +44,11 @@ public class BlogService {
 
 
     public Page<BlogEntity> findByPageNo(Pageable pageable) {
+//        return blogRepository.findAll(pageable);
+        return blogRepository.findByDelYn(pageable);
+    }
+
+    public Page<BlogEntity> findByPageNo2(Pageable pageable) {
         return blogRepository.findAll(pageable);
     }
 
@@ -51,23 +56,14 @@ public class BlogService {
     public void blogListShowCheckService(Long seq) {
         Optional<BlogEntity> byId = blogRepository.findById(seq);
         BlogEntity blogEntity = byId.orElse(null);
-        if (blogEntity.getDelYn().equals("N")) {
-            int blogEntity1 = blogRepository.updateDelY(seq);
-            System.out.println("blogEntity1 = " + blogEntity1);
-        } else if (blogEntity.getDelYn().equals("Y")) {
-            int blogEntity1 = blogRepository.updateDelN(seq);
-            System.out.println("blogEntity1 = " + blogEntity1);
-        } else System.out.println("BlogService.blogListShowCheckService ############");
+        if (blogEntity.getDelYn().equals("N") || blogEntity.getDelYn().equals(null)) blogRepository.updateDelY(seq);
+        else if (blogEntity.getDelYn().equals("Y") || blogEntity.getDelYn().equals(null))
+            blogRepository.updateDelN(seq);
     }
 
     // 전체 리스트 표시 유/무
     public void blogListsShowCheckService(Long seq, boolean status) {
-        if (status) {
-            int blogEntity1 = blogRepository.updateDelY(seq);
-            System.out.println("blogEntity1 = " + blogEntity1);
-        } else {
-            int blogEntity1 = blogRepository.updateDelN(seq);
-            System.out.println("blogEntity1 = " + blogEntity1);
-        }
+        if (status) blogRepository.updateDelY(seq);
+        else blogRepository.updateDelN(seq);
     }
 }
