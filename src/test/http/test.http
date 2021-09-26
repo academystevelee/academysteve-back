@@ -43,3 +43,18 @@ GET localhost:8103/academyback/blog/bloglist?page=0
 
 ### testdomain
 GET localhost:8103/academyback/enroll/easyvvon@gmail.com
+
+###########################linux
+
+
+### sendmaildomain
+
+POST http://121.138.197.8:8103/academyback/sendAuthMail
+Content-Type: application/json
+
+{
+  "mail": "stevelee@steveleejava.com"
+}
+
+### testdomain
+GET localhost:8103/academyback/enroll/stevelee@steveleejava.com

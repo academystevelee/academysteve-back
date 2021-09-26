@@ -44,6 +44,12 @@ public class EnrollEntity {
   @Column(name = "STATUS")
   private String status;
 
+  @Column(name = "CANCEL_YN")
+  private String cancelYn;
+
+  @Column(name = "AGREE_YN")
+  private String agreeYn;
+
   public EnrollEntity() {
 
     this.regDt = new Date();

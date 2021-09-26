@@ -39,7 +39,7 @@ public class ClassService {
 
     ClassEntity classEntity = classRepository.findByClassNo(classNo);
     classEntity.setHit(classEntity.getHit() + 1);
-    classRepository.save(classEntity);
+    classRepository.updateBySeq(classEntity);
     return classEntity;
   }
 

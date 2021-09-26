@@ -12,6 +12,10 @@ import java.util.List;
 @Repository
 public interface EnrollRepository extends JpaRepository<EnrollEntity, String> {
 
-  EnrollEntity findByUserId(String userId);
+  EnrollEntity findBySeq(Long seq);
+  List<EnrollEntity> findByUserId(String userId);
+  EnrollEntity findByUserIdAndClassNo(String userId,String ClassNo);
   List<EnrollEntity> findByUserIdAndStatus(String userId,String status);
+  List<EnrollEntity> findByUserIdAndStatusAndCancelYn(String userId,String status,String cancelYn);
+
 }

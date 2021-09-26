@@ -9,4 +9,6 @@ public class JwtUserDto {
   private String userId;
   private String userType;
   private String token;
+  private String black;
+
 }

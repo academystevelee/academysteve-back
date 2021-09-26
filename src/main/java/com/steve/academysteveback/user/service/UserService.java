@@ -32,11 +32,12 @@ public class UserService {
   public String login(LoginDto loginDto) {
     String jwtToken;
     UserEntity userEntity = userRepository.findByUserId(loginDto.getUserId());
+    System.out.println("login userEntity:" + userEntity);
 
     if(userEntity != null) {
       if(BCrypt.checkpw(loginDto.getUserPw(), userEntity.getUserPw())) {
         userEntity.setLoginDt(new Date());
-        return jwtToken = jwtService.createJwtToken(userEntity.getUserSeq().toString(), userEntity.getUserId(), userEntity.getUserType());
+        return jwtToken = jwtService.createJwtToken(userEntity.getUserSeq().toString(), userEntity.getUserId(), userEntity.getUserType(), userEntity.getBlack());
       }
     }
     return null;
@@ -50,7 +51,10 @@ public class UserService {
   public void join(JoinDto joinDto) {
     UserEntity userEntity = userRepository.findByUserId(joinDto.getUserId());
     if(userEntity == null) userEntity = modelMapper.map(joinDto, UserEntity.class);
-    else userEntity.setUserPw(joinDto.getUserPw());
+    else {
+      userEntity.setUserPw(joinDto.getUserPw());
+      userEntity.setUpdateDt(new Date());
+    }
     userRepository.save(userEntity);
   }
 
@@ -62,6 +66,7 @@ public class UserService {
     UserEntity userEntity = userRepository.findByUserId(joinDto.getUserId());
     userEntity.setUserName(joinDto.getUserName());
     userEntity.setUserPhone(joinDto.getUserPhone());
+    userEntity.setUpdateDt(new Date());
     userEntity.setAgreeYn('Y');
     userRepository.save(userEntity);
   }

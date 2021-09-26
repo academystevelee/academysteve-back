@@ -70,6 +70,7 @@ public class UserController {
     public void sendAuthMail(@RequestBody UserDto userDto, HttpServletRequest request) throws Exception {
 
         MailDto mailDto = new MailDto();
+        mailDto.setFrom("steveleejava@steveleejava.com");
         mailDto.setTo(userDto.getMail());
         mailDto.setSubject("스티브리아카데미 가입인증 메일");
         mailDto.setMailTemplate("tokenMail.html");
@@ -78,11 +79,10 @@ public class UserController {
 
         logDto.setUserId(userDto.getMail());
         logDto.setUserIp(request.getRemoteAddr());
-
         logDto.setReqUrl(request.getRequestURL().toString());
 
 
-        String authNumber = mailService.sendMail(mailDto, logDto);
+        String authNumber = mailService.sendAuthMail(mailDto, logDto);
 
         System.out.println("auth:" + authNumber);
 
@@ -92,6 +92,36 @@ public class UserController {
 
         ApiResponseModel response = new ApiResponseModel();
         userService.join(joinDto);
+        response.put(null);
+
+
+    }
+
+    @PostMapping("/sendMail")
+    @ApiOperation(value = "메일 발송", notes = "메일을 발송한다.")
+    public void sendMail(@RequestBody MailDto mailDto, HttpServletRequest request) throws Exception {
+
+        /*
+        mailDto.setFrom("steveleejava@steveleejava.com");
+        */
+
+        mailDto.setTo("stevelee@steveleejava.com");
+
+        mailDto.setSubject("스티브리자바 문의 메일");
+        mailDto.setMailTemplate("MsgMail.html");
+
+        LogDto logDto = new LogDto();
+
+        logDto.setUserId(mailDto.getFrom());
+        logDto.setUserIp(request.getRemoteAddr());
+
+        logDto.setReqUrl(request.getRequestURL().toString());
+
+
+        mailService.sendMail(mailDto, logDto);
+        ApiResponseModel response = new ApiResponseModel();
+
+        response.setResultCode(200);
         response.put(null);
 
 
@@ -181,6 +211,7 @@ public class UserController {
         }
         */
         if(jwtUserDto2.getUserType() == null) response.setResultCode(500);
+        else if(jwtUserDto2.getBlack() == null) response.setResultCode(500);
         else {
             response.setData(jwtUserDto2);
         }

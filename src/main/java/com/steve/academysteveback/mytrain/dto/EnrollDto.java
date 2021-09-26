@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class EnrollDto {
 
+  private Long seq;
   private String userId;
   private String classNo;
   private String age;
@@ -14,5 +15,7 @@ public class EnrollDto {
   private String date;
   private String reason;
   private String status;
+  private String cancelYn;
+  private String agreeYn;
 
 }

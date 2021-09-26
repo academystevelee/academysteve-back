@@ -19,7 +19,7 @@ public class JwtService {
    * @param userType
    * @return
    */
-  public String createJwtToken(String userSeq, String id, String userType) {
+  public String createJwtToken(String userSeq, String id, String userType, Character black) {
     JwtBuilder builder = Jwts.builder();
 
     Map<String, Object> headers = new HashMap<>();
@@ -30,12 +30,14 @@ public class JwtService {
     payloads.put("userSeq", userSeq);
     payloads.put("userId", id);
     payloads.put("userType", userType);
+    payloads.put("black", black);
 
     SignatureAlgorithm alg = SignatureAlgorithm.HS256;
     byte[] secretKey = JwtProperties.SECRET.getBytes();
 
     Date ext = new Date();
     ext.setTime(ext.getTime() + JwtProperties.EXPIRATION_TIME);
+    System.out.println("ext : " + ext.toString());
 
 
     String jwt = Jwts.builder()
@@ -93,6 +95,7 @@ public class JwtService {
       jwtUserDto.setSeq(Long.parseLong(claims.get("userSeq", String.class)));
       jwtUserDto.setUserId(claims.get("userId", String.class));
       jwtUserDto.setUserType(claims.get("userType", String.class));
+      jwtUserDto.setBlack(claims.get("black", String.class));
 
       if(!(expiration.getTime() - new Date().getTime() > 0)) {
         System.out.println("유효시간 만료");

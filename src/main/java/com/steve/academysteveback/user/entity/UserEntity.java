@@ -68,6 +68,8 @@ public class UserEntity {
   @Column(name = "AGREE_YN")
   private Character agreeYn;
 
+  @Column(name = "BLACK")
+  private Character black;
 
   public UserEntity() {
     this.userType = "USER";

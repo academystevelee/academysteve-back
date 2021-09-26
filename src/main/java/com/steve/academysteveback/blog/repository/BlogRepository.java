@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface BlogRepository extends JpaRepository<BlogEntity, Long> {
 
   //BlogEntity findByClassNo(String classNo);
+  BlogEntity findBySeq(Long seq);
 }

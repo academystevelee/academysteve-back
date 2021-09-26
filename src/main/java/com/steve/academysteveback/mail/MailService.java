@@ -29,10 +29,10 @@ public class MailService {
 
 
   /**
-   * 메일발송
-   * @param mailDto
+   * 인증메일발송
+   * @param mailDto logDto
    */
-  public String sendMail(MailDto mailDto, LogDto logDto) {
+  public String sendAuthMail(MailDto mailDto, LogDto logDto) {
     String authNumber = NumberUtil.randomNum(6);
     Context context = new Context();
     context.setVariable("emailToken", authNumber);
@@ -44,6 +44,7 @@ public class MailService {
       MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
 
       helper.setTo(mailDto.getTo());
+      helper.setFrom(mailDto.getFrom());
       helper.setSubject(mailDto.getSubject());
       helper.setText(html, true);
 
@@ -57,5 +58,36 @@ public class MailService {
     }
 
     return authNumber;
+  }
+
+  /**
+   * 메일발송
+   * @param mailDto
+   */
+  public void sendMail(MailDto mailDto, LogDto logDto) {
+
+    Context context = new Context();
+    context.setVariable("fromguest", mailDto.getFrom() + "님이 보내신 메세지 입니다.");
+    context.setVariable("msg", mailDto.getMessage());
+    String html = templateEngine.process(mailDto.getMailTemplate(), context);
+
+    try {
+      MimeMessage message = javaMailSender.createMimeMessage();
+      MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+
+      helper.setTo(mailDto.getTo());
+      helper.setFrom(mailDto.getFrom());
+      helper.setSubject(mailDto.getSubject());
+      helper.setText(html, true);
+
+      javaMailSender.send(message);
+      logDto.setLocation("mail success");
+      logService.logging(logDto);
+    } catch(MessagingException e) {
+      logDto.setLocation("mail fail");
+      logService.logging(logDto);
+      throw new RuntimeException(e);
+    }
+
   }
 }

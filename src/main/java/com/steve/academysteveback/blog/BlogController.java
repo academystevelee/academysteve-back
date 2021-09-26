@@ -42,9 +42,9 @@ public class BlogController {
 
     @GetMapping("/blogview/{blogno}")
     @ApiOperation(value = "인증메일 발송", notes = "인증메일을 발송한다.")
-    public Optional<BlogEntity> blogviewfindByBlogNo(@PathVariable Long blogno) throws Exception {
+    public BlogEntity blogviewfindByBlogNo(@PathVariable Long blogno) throws Exception {
         System.out.println("blogno ok : " + blogno) ;
-        Optional<BlogEntity> blogEntity = blogService.findByBlogNo(blogno);
+        BlogEntity blogEntity = blogService.findByBlogNo(blogno);
 
 
         return blogEntity;
@@ -52,7 +52,7 @@ public class BlogController {
     }
 
     @GetMapping("/bloglist")
-    @ApiOperation(value = "인증메일 발송", notes = "인증메일을 발송한다.")
+    @ApiOperation(value = "블로그리스트", notes = "블로그리스트")
     public Page<BlogEntity> bloglistfindByPageNo(@PageableDefault(size = 10, sort = "seq",direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 
 

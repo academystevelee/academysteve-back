@@ -4,6 +4,9 @@ package com.steve.academysteveback.blog.service;
 import com.steve.academysteveback.blog.dto.BlogDto;
 import com.steve.academysteveback.blog.entity.BlogEntity;
 import com.steve.academysteveback.blog.repository.BlogRepository;
+import com.steve.academysteveback.util.commoncode.CommonCodeService;
+import com.steve.academysteveback.util.commoncode.CommonDto;
+import com.steve.academysteveback.util.commoncode.CommonEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +21,9 @@ public class BlogService {
 
   @Autowired
   BlogRepository blogRepository;
+
+  @Autowired
+  CommonCodeService commonCodeService;
 
 
   ModelMapper modelMapper = new ModelMapper();
@@ -37,10 +43,13 @@ public class BlogService {
   /**
    * 강좌조회
    */
-  public Optional<BlogEntity> findByBlogNo(Long blogNo) {
+  public BlogEntity findByBlogNo(Long blogNo) {
 
 
-    Optional<BlogEntity> blogEntity = blogRepository.findById(blogNo);
+    BlogEntity blogEntity = blogRepository.findBySeq(blogNo);
+
+    blogEntity.setHit(blogEntity.getHit() + 1);
+    blogRepository.save(blogEntity);
 
     return blogEntity;
   }
@@ -48,7 +57,21 @@ public class BlogService {
 
   public Page<BlogEntity> findByPageNo(Pageable pageable){
 
-    return blogRepository.findAll(pageable);
+
+    Page<BlogEntity> pbloglist = blogRepository.findAll(pageable);
+
+    for(int n = 0 ; n < pbloglist.getContent().size() ; n ++) {
+
+      CommonDto commonDto =  new CommonDto();
+      commonDto.setCode1("cate");
+      commonDto.setCode2(pbloglist.getContent().get(n).getCate());
+
+      CommonEntity commonEntity = commonCodeService.findCodeName(commonDto);
+      pbloglist.getContent().get(n).setCate(commonEntity.getCodename());
+
+    }
+
+    return pbloglist;
   }
 
 

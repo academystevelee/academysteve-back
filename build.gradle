@@ -60,3 +60,9 @@ jar {
         attributes 'AcademysteveBackApplication':'com.steve.academysteveback'
     }
 }
+
+bootJar{
+    archivesBaseName = 'academysteveback'
+    archiveFileName = 'academysteveback.jar'
+    archiveVersion = '0.0.0'
+}
