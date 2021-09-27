@@ -50,10 +50,14 @@ public class UserService {
    */
   public void join(JoinDto joinDto) {
     UserEntity userEntity = userRepository.findByUserId(joinDto.getUserId());
-    if(userEntity == null) userEntity = modelMapper.map(joinDto, UserEntity.class);
+    if(userEntity == null) {
+      userEntity = modelMapper.map(joinDto, UserEntity.class);
+      userEntity.setBlack('N');
+    }
     else {
       userEntity.setUserPw(joinDto.getUserPw());
       userEntity.setUpdateDt(new Date());
+      userEntity.setBlack('N');
     }
     userRepository.save(userEntity);
   }

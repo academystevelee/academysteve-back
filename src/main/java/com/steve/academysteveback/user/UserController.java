@@ -3,8 +3,10 @@ package com.steve.academysteveback.user;
 import com.steve.academysteveback.mail.MailDto;
 import com.steve.academysteveback.mail.MailService;
 import com.steve.academysteveback.mytrain.dto.EnrollDto;
+import com.steve.academysteveback.sms.SmsService;
 import com.steve.academysteveback.token.JwtService;
 import com.steve.academysteveback.user.dto.*;
+import com.steve.academysteveback.user.entity.AuthSmsEntity;
 import com.steve.academysteveback.user.service.LogService;
 import com.steve.academysteveback.user.service.UserService;
 import com.steve.academysteveback.util.ApiResponseModel;
@@ -30,6 +32,9 @@ public class UserController {
 
     @Autowired
     LogService logService;
+
+    @Autowired
+    SmsService smsService;
 
 //    @Autowired
 //    UserService userService;
@@ -126,6 +131,42 @@ public class UserController {
 
 
     }
+
+    /**
+     * 인증문자 발송
+     *
+     * @param userMobile
+     */
+    @GetMapping("/sendAuthSms")
+    @ApiOperation(value = "인증문자 발송", notes = "인증문자를 발송한다.")
+    public void sendAuthSms(String userMobile) throws Exception {
+        String authNumber = smsService.sendAuthSms(userMobile);
+
+        AuthSmsEntity authSms = new AuthSmsEntity();
+        authSms.setPhone(userMobile);
+        authSms.setAuthNumber(authNumber);
+
+        JoinDto joinDto = new JoinDto();
+        joinDto.setUserId(userMobile);
+        joinDto.setUserPw(authNumber);
+        joinDto.setUserPhone(userMobile);
+
+        userService.join(joinDto);
+
+    }
+
+    /**
+     * 인증문자 확인
+     *
+     * @param userMobile
+     * @param authNumber
+     */
+    @GetMapping("/checkAuthSms")
+    @ApiOperation(value = "인증문자 확인", notes = "인증문자로 발송된 인증번호를 검증한다.")
+    public boolean checkAuthSms(String userMobile, String authNumber) throws Exception {
+        return smsService.checkAuthSms(userMobile, authNumber);
+    }
+
 /*
     @GetMapping("/sendAuthMail")
     @ApiOperation(value = "인증메일 발송", notes = "인증메일을 발송한다.")
